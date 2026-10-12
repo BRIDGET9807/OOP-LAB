@@ -1,0 +1,18 @@
+public class Temperature {
+    private final double celsius;
+
+    private Temperature(double celsius) { this.celsius = celsius; }
+
+    public static Temperature fromCelsius(double c)    { return new Temperature(c); }
+    public static Temperature fromFahrenheit(double f) { return new Temperature((f - 32) * 5 / 9); }
+
+    public double toCelsius()    { return celsius; }
+    public double toFahrenheit() { return celsius * 9 / 5 + 32; }
+
+    public static void main(String[] args) {
+        Temperature boiling = Temperature.fromCelsius(100);
+        Temperature body = Temperature.fromFahrenheit(98.6);
+        System.out.printf("100 C = %.1f F%n", boiling.toFahrenheit());
+        System.out.printf("98.6 F = %.1f C%n", body.toCelsius());
+    }
+}
