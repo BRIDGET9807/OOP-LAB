@@ -1,0 +1,18 @@
+/**
+ * Exercise 4: predict the output.
+ * Prediction: S1, S2 (once), then for each object: I1, I2, constructor.
+ */
+public class BlockOrder {
+    static { System.out.println("static block 1"); }
+    { System.out.println("instance block 1"); }
+    static { System.out.println("static block 2"); }
+    { System.out.println("instance block 2"); }
+
+    BlockOrder() { System.out.println("constructor"); }
+
+    public static void main(String[] args) {
+        System.out.println("main starts");
+        new BlockOrder();
+        new BlockOrder();
+    }
+}
