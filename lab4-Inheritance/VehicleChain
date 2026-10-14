@@ -1,0 +1,16 @@
+/** Exercise 3: multilevel inheritance, trace constructor order. */
+class Vehicle {
+    Vehicle() { System.out.println("1. Vehicle constructor"); }
+}
+class Car extends Vehicle {
+    Car() { System.out.println("2. Car constructor"); }
+}
+class ElectricCar extends Car {
+    ElectricCar() { System.out.println("3. ElectricCar constructor"); }
+}
+
+public class VehicleChain {
+    public static void main(String[] args) {
+        new ElectricCar();   // parent constructors run first: Vehicle -> Car -> ElectricCar
+    }
+}
