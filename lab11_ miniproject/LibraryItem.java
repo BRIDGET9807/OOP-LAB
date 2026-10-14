@@ -1,4 +1,4 @@
-package lab11_ miniproject;
+;
 
     
 public abstract class LibraryItem implements Borrowable {
