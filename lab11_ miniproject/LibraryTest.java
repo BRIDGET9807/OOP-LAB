@@ -1,4 +1,4 @@
-package lab11_ miniproject;
+;
 
 import java.io.IOException;
 import java.nio.file.*;
