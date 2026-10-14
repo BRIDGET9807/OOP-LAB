@@ -1,4 +1,4 @@
-package lab11- Miniproject;
+- Miniproject;
 
 public class Book extends LibraryItem {
     private final String author;
