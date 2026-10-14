@@ -1,0 +1,73 @@
+import java.io.IOException;
+import java.nio.file.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/** Saves and loads a Library as three CSV files . */
+public class LibraryStorage {
+    private final Path dir;
+
+    public LibraryStorage(String directory) { this.dir = Path.of(directory); }
+
+    private static String clean(String s) { return s.replace(",", " ").replace("\n", " "); }
+
+    public void save(Library lib) throws IOException {
+        Files.createDirectories(dir);
+
+        List<String> itemLines = new ArrayList<>();
+        for (LibraryItem i : lib.getItems()) {
+            itemLines.add(i.type() + "," + clean(i.getId()) + "," + clean(i.getTitle()) + "," + clean(i.extra()));
+        }
+        Files.write(dir.resolve("items.csv"), itemLines);
+
+        List<String> memberLines = new ArrayList<>();
+        for (Member m : lib.getMembers()) memberLines.add(clean(m.getId()) + "," + clean(m.getName()));
+        Files.write(dir.resolve("members.csv"), memberLines);
+
+        List<String> loanLines = new ArrayList<>();
+        for (Loan l : lib.getLoans()) {
+            loanLines.add(l.getMember().getId() + "," + l.getItem().getId() + ","
+                    + l.getBorrowedOn() + "," + l.getDueDate());
+        }
+        Files.write(dir.resolve("loans.csv"), loanLines);
+    }
+
+    public Library load() throws IOException {
+        Library lib = new Library();
+        Path items = dir.resolve("items.csv");
+        Path members = dir.resolve("members.csv");
+        Path loans = dir.resolve("loans.csv");
+
+        if (Files.exists(items)) {
+            for (String line : Files.readAllLines(items)) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",", -1);
+                switch (p[0]) {
+                    case "BOOK" -> lib.addItem(new Book(p[1], p[2], p[3]));
+                    case "DVD"  -> lib.addItem(new Dvd(p[1], p[2], Integer.parseInt(p[3])));
+                    default     -> System.out.println("Skipping unknown item type: " + p[0]);
+                }
+            }
+        }
+        if (Files.exists(members)) {
+            for (String line : Files.readAllLines(members)) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",", -1);
+                lib.registerMember(new Member(p[0], p[1]));
+            }
+        }
+        if (Files.exists(loans)) {
+            for (String line : Files.readAllLines(loans)) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",", -1);
+                Member m = lib.findMember(p[0]);
+                LibraryItem i = lib.findItem(p[1]);
+                if (m != null && i != null) {
+                    lib.restoreLoan(new Loan(m, i, LocalDate.parse(p[2]), LocalDate.parse(p[3])));
+                }
+            }
+        }
+        return lib;
+    }
+}
