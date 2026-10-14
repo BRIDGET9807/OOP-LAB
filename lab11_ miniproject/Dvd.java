@@ -1,4 +1,4 @@
-package lab11_ miniproject;
+;
 
 public class Dvd extends LibraryItem {
     private final int minutes;
